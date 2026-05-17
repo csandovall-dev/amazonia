@@ -11,4 +11,5 @@ streamlit-folium==0.20.0
 requests==2.31.0
 joblib==1.3.2
 python-box==7.1.1
-xyz
+xyzservices==2024.4.0
+branca==0.7.1
