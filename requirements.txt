@@ -1,0 +1,12 @@
+streamlit
+earthengine-api
+geemap
+pandas
+numpy
+scikit-learn
+statsmodels
+matplotlib
+folium
+streamlit-folium
+requests
+joblib
