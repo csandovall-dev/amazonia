@@ -1,0 +1,38 @@
+name: Sync to Hugging Face Space
+
+on:
+  push:
+    branches:
+      - main  # O 'master', verifica el nombre de tu rama principal en GitHub
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          
+          # Clonar el Space de HF en una carpeta temporal
+          git clone https://huggingface.co/spaces/crsandovall/Amazonas-Deforestation hf_space
+          
+          # Copiar todos los archivos del repo actual al espacio de HF
+          # Excluimos la carpeta .git del espacio para evitar conflictos
+          rsync -av --delete --exclude='.git' ./ hf_space/
+          
+          cd hf_space
+          
+          # Configurar git para empujar con el token
+          git remote set-url origin https://user:${HF_TOKEN}@huggingface.co/spaces/crsandovall/Amazonas-Deforestation
+          
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Sync from GitHub: ${{ github.sha }}"
+          git push
